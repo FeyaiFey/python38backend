@@ -1,14 +1,16 @@
 import os
-from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException
 from models.dbm_user import User
 from api.users import get_current_user
 from fastapi.responses import FileResponse
 from typing import Optional
+from core.config import settings
+
 
 router = APIRouter()
 
-UPLOAD_FOLDER = str(Path(__file__).resolve().parents[1]) + "\\upload\\private"
+public_folder = settings.UPLOAD_PUBLIC_FOLDER
+root_folder = settings.ROOT_FOLDER
 
 def get_folder_structure(path):
     folder_tree = []
@@ -39,7 +41,7 @@ def get_files(path):
 @router.get("/folder")
 def get_folder(current_user: User = Depends(get_current_user)):
     try:
-        folder_tree = get_folder_structure(UPLOAD_FOLDER)
+        folder_tree = get_folder_structure(public_folder)
         return {"code": 0, "data": folder_tree}
     except:
         raise HTTPException(status_code=400, detail="文件结构获取错误！")
@@ -47,7 +49,7 @@ def get_folder(current_user: User = Depends(get_current_user)):
 @router.get("/filelists")
 def get_filelist(path:Optional[str]=None,current_user: User = Depends(get_current_user)):
     try:
-        files = get_files(UPLOAD_FOLDER[0:-14] + "\\" + path)
+        files = get_files(root_folder + "\\" + path)
         return {"code": 0, "data": files}
     except:
         raise HTTPException(status_code=400, detail="文件结构获取错误！")
@@ -55,7 +57,7 @@ def get_filelist(path:Optional[str]=None,current_user: User = Depends(get_curren
 
 @router.get("/preview")
 def get_file_path(path:Optional[str]=None,file_name :Optional[str]=None,current_user: User = Depends(get_current_user)):
-    full_path = UPLOAD_FOLDER[0:-14] + "\\" + path
+    full_path = root_folder + "\\" + path
     if not os.path.isfile(full_path):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(full_path, filename=file_name)
@@ -66,7 +68,7 @@ async def get_file(path:Optional[str]=None,file_name :Optional[str]=None,current
     """
     获取文件的下载链接
     """
-    full_path = UPLOAD_FOLDER[0:-14] + "\\" + path
+    full_path = root_folder + "\\" + path
     if not os.path.isfile(full_path):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(full_path,filename=file_name)

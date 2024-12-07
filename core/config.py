@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     SMTP_PORT: int=465
     EMAIL_ACCOUNT: str
     PASSWORD: str
+    UPLOAD_PUBLIC_FOLDER: str
+    UPLOAD_PRIVATE_FOLDER: str
+    ROOT_FOLDER: str
 
     class Config:
         env_file = ".env"

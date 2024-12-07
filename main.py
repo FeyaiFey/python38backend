@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="upload/static"), name="static")
+app.mount("/static", StaticFiles(directory="D:/hsunAdmin/upload/static"), name="static")
 
 
 app.add_middleware(
