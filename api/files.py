@@ -59,7 +59,7 @@ def get_filelist(path:Optional[str]=None,current_user: User = Depends(get_curren
 def get_file_path(path:Optional[str]=None,file_name :Optional[str]=None,current_user: User = Depends(get_current_user)):
     full_path = root_folder + "\\" + path
     if not os.path.isfile(full_path):
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail="文件未找到!")
     return FileResponse(full_path, filename=file_name)
 
 
@@ -70,5 +70,5 @@ async def get_file(path:Optional[str]=None,file_name :Optional[str]=None,current
     """
     full_path = root_folder + "\\" + path
     if not os.path.isfile(full_path):
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail="文件未找到!")
     return FileResponse(full_path,filename=file_name)
